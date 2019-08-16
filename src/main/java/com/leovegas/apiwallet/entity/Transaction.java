@@ -1,30 +1,28 @@
 package com.leovegas.apiwallet.entity;
 
+import com.leovegas.apiwallet.domain.TransactionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Player {
+public class Transaction {
 
     @Id
     @GeneratedValue
     private long id;
 
-    private String fistName;
+    private long accountNumber;
 
-    private String lastName;
+    private TransactionType transactionType;
 
-    public Player(String fistName, String lastName) {
-        this.fistName = fistName;
-        this.lastName = lastName;
-    }
+    private Date date;
 
-
+    private long amount;
 }

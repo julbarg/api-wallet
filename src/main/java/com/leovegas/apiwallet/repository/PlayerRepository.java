@@ -1,4 +1,4 @@
-package com.leovegas.apiwallet.service;
+package com.leovegas.apiwallet.repository;
 
 import com.leovegas.apiwallet.entity.Player;
 import org.springframework.data.jpa.repository.JpaRepository;
