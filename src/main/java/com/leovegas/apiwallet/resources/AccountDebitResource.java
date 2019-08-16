@@ -1,4 +1,4 @@
 package com.leovegas.apiwallet.resources;
 
-public interface AccountDebitResource {
+public class AccountDebitResource {
 }
