@@ -1,7 +1,6 @@
 package com.leovegas.apiwallet;
 
 import com.leovegas.apiwallet.entity.Player;
-import com.leovegas.apiwallet.service.PlayerDAOService;
 import com.leovegas.apiwallet.service.PlayerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
