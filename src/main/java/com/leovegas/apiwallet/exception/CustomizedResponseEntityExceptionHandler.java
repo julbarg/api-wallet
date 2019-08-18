@@ -1,5 +1,6 @@
 package com.leovegas.apiwallet.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) throws Exception {
 
+        System.out.println(ex.getClass());
+
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .timestamp(new Date())
                 .message(ex.getMessage())
@@ -43,6 +46,18 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
                 .build();
 
         return new ResponseEntity(exceptionResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public final ResponseEntity<Object> handleInsufficientFundsException(BadRequestException ex, WebRequest request) throws Exception {
+
+        ExceptionResponse exceptionResponse = ExceptionResponse.builder()
+                .timestamp(new Date())
+                .message(ex.getMessage())
+                .details(Arrays.asList(request.getDescription(false)))
+                .build();
+
+        return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
     @Override

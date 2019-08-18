@@ -16,11 +16,10 @@ public class AccountService {
         Account account =  accountRepository.findByAccountNumber(accountNumber);
 
         return AccountResponse.builder()
-                .firsName("Julian")
-                .lastName("Barragan")
+                .client(account.getClient())
                 .accountNumber(account.getAccountNumber())
                 .balance(account.getBalance())
-                .playerId(account.getPlayerId())
+                .client(account.getClient())
                 .build();
     }
 }

@@ -2,15 +2,13 @@ package com.leovegas.apiwallet.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leovegas.apiwallet.domain.TransactionType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,18 +16,24 @@ import java.util.Date;
 public class Transaction {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
     private long id;
 
-    private long accountNumber;
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TransactionType transactionType;
 
+    @Column(nullable = false)
     private Date date;
 
-    private long transactionId;
+    @Column(nullable = false, unique = true)
+    private Long transactionId;
 
-    private long amount;
+    @Column(nullable = false)
+    private Long amount;
 }

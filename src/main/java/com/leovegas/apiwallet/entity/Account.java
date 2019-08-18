@@ -1,14 +1,14 @@
 package com.leovegas.apiwallet.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -19,12 +19,21 @@ import javax.persistence.Id;
 public class Account {
 
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+    private Long id;
 
+    @Column(nullable = false)
     private long accountNumber;
 
-    private long playerId;
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
 
+    @OneToMany(mappedBy = "account")
+    @Column(nullable = false)
+    private Set<Transaction> transaction;
+
+    @Column(nullable = false)
     private long balance;
 }

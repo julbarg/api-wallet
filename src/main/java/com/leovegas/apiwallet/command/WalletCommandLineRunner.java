@@ -1,17 +1,18 @@
 package com.leovegas.apiwallet.command;
 
+import com.leovegas.apiwallet.domain.TransactionType;
 import com.leovegas.apiwallet.entity.Account;
-import com.leovegas.apiwallet.entity.Player;
-import com.leovegas.apiwallet.repository.AccountRepository;
-import com.leovegas.apiwallet.repository.PlayerRepository;
+import com.leovegas.apiwallet.entity.Client;
+import com.leovegas.apiwallet.entity.Transaction;
+import com.leovegas.apiwallet.repository.ClientRepository;
+import com.leovegas.apiwallet.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Date;
 
 @Component
 public class WalletCommandLineRunner implements CommandLineRunner {
@@ -19,30 +20,36 @@ public class WalletCommandLineRunner implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(WalletCommandLineRunner.class);
 
     @Autowired
-    PlayerRepository playerRepository;
+    ClientRepository clientRepository;
 
     @Autowired
-    AccountRepository accountRepository;
+    TransactionRepository transactionRepository;
 
     @Override
     public void run(String... args) throws Exception {
-        Player player = new Player("Sandra", "Barragan");
-
-        playerRepository.save(player);
-        logger.info("New User is create: " + player);
-
-        Optional<Player> playerWithIdOne = playerRepository.findById(1L);
-        logger.info("Player is retrieved: " + playerWithIdOne);
-
-        List<Player> players = playerRepository.findAll();
-        logger.info("All Players: " + players);
-
         Account account = Account.builder()
                 .accountNumber(1024501252L)
-                .playerId(1234)
                 .balance(250000)
                 .build();
 
-        accountRepository.save(account);
+        Client client = Client.builder()
+                .fistName("Julian")
+                .lastName("Barragan")
+                .account(account)
+                .build();
+
+        account.setClient(client);
+
+        clientRepository.save(client);
+
+        Transaction transaction = Transaction.builder()
+                .date(new Date())
+                .amount(100L)
+                .transactionType(TransactionType.CREDIT)
+                .transactionId(7888L)
+                .account(account)
+                .build();
+
+        transactionRepository.save(transaction);
     }
 }

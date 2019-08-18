@@ -1,19 +1,18 @@
 package com.leovegas.apiwallet.resources;
 
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.leovegas.apiwallet.domain.AccountResponse;
 import com.leovegas.apiwallet.domain.TransactionRequest;
+import com.leovegas.apiwallet.domain.TransactionResponse;
+import com.leovegas.apiwallet.entity.Account;
 import com.leovegas.apiwallet.entity.Transaction;
 import com.leovegas.apiwallet.exception.TransactionNotFoundException;
 import com.leovegas.apiwallet.service.TransactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/wallet/transaction")
@@ -38,15 +37,24 @@ public class TransactionResource {
 
     @PostMapping
     @ApiOperation("Create transaction")
-    public ResponseEntity<Object> createTransaction(@Valid @RequestBody TransactionRequest request) {
+    public TransactionResponse createTransaction(@Valid @RequestBody TransactionRequest request) {
         Transaction transaction = transactionService.createTransaction(request);
+        Account account = transaction.getAccount();
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{transactionId}")
-                .buildAndExpand(transaction.getId())
-                .toUri();
+        AccountResponse accountResponse = AccountResponse.builder()
+                .accountNumber(account.getAccountNumber())
+                .balance(account.getBalance())
+                .client(account.getClient())
+                .build();
 
-        return ResponseEntity.created(location).build();
+        TransactionResponse response = TransactionResponse.builder()
+                .account(accountResponse)
+                .date(transaction.getDate())
+                .transactionId(transaction.getTransactionId())
+                .transactionType(transaction.getTransactionType().name())
+                .amount(transaction.getAmount())
+                .build();
+
+        return response;
     }
 }
