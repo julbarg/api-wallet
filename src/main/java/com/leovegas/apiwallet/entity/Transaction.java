@@ -1,5 +1,6 @@
 package com.leovegas.apiwallet.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.leovegas.apiwallet.domain.TransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class Transaction {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private long id;
 
     private long accountNumber;

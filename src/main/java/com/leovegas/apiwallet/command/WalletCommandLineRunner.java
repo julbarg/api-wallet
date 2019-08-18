@@ -1,4 +1,4 @@
-package com.leovegas.apiwallet;
+package com.leovegas.apiwallet.command;
 
 import com.leovegas.apiwallet.entity.Account;
 import com.leovegas.apiwallet.entity.Player;
