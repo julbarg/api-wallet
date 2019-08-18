@@ -14,9 +14,9 @@ import lombok.Setter;
 @Builder
 public class AccountResponse {
 
-    private long accountNumber;
+    private Long accountNumber;
 
-    private long balance;
+    private Double balance;
 
     private Client client;
 }

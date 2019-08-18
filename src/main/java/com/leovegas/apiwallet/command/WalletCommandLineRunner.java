@@ -29,7 +29,7 @@ public class WalletCommandLineRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Account account = Account.builder()
                 .accountNumber(1024501252L)
-                .balance(250000)
+                .balance(250000.0)
                 .build();
 
         Client client = Client.builder()
@@ -44,7 +44,7 @@ public class WalletCommandLineRunner implements CommandLineRunner {
 
         Transaction transaction = Transaction.builder()
                 .date(new Date())
-                .amount(100L)
+                .amount(100.0)
                 .transactionType(TransactionType.CREDIT)
                 .transactionId(7888L)
                 .account(account)

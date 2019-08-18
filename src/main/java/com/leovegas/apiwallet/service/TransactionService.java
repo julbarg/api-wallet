@@ -1,18 +1,24 @@
 package com.leovegas.apiwallet.service;
 
 import com.leovegas.apiwallet.domain.TransactionRequest;
+import com.leovegas.apiwallet.domain.TransactionResponse;
 import com.leovegas.apiwallet.domain.TransactionType;
 import com.leovegas.apiwallet.entity.Account;
 import com.leovegas.apiwallet.entity.Transaction;
+import com.leovegas.apiwallet.exception.AccountNotFoundException;
 import com.leovegas.apiwallet.exception.InsufficientFundsException;
 import com.leovegas.apiwallet.exception.TransactionIdUniqueException;
+import com.leovegas.apiwallet.exception.TransactionNotFoundException;
 import com.leovegas.apiwallet.repository.AccountRepository;
 import com.leovegas.apiwallet.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class TransactionService {
@@ -24,9 +30,30 @@ public class TransactionService {
     private AccountRepository accountRepository;
 
     public Transaction retrieveTransaction(long transactionId) {
-        Optional<Transaction> result = transactionRepository.findById(transactionId);
+        Transaction transaction = transactionRepository.findByTransactionId(transactionId);
 
-        return result.isPresent() ? result.get() : null;
+        return transaction;
+    }
+
+    public Set<TransactionResponse> retrieveHistoryTransaction(long accountNumber) {
+        Account account = accountRepository.findByAccountNumber(accountNumber);
+
+        if (account == null) {
+            throw new AccountNotFoundException();
+        }
+
+        List<Transaction> listTransaction = transactionRepository.findByAccount(account);
+
+        return listTransaction.stream().map(
+                transaction ->
+                    TransactionResponse.builder()
+                            .date(transaction.getDate())
+                            .transactionId(transaction.getTransactionId())
+                            .transactionType(transaction.getTransactionType().name())
+                            .amount(transaction.getAmount())
+                            .build()
+        ).collect(Collectors.toSet());
+
     }
 
     public Transaction createTransaction(TransactionRequest request) {
@@ -55,8 +82,9 @@ public class TransactionService {
         return transaction;
     }
 
-    private long getNewBalance(Account account, Long amount, TransactionType transactionType) {
-        long result;
+    private double getNewBalance(Account account, Double amount, TransactionType transactionType) {
+        double result;
+
         switch (transactionType) {
             case DEBIT:
                 result = account.getBalance() - amount;
@@ -71,8 +99,8 @@ public class TransactionService {
         return result;
     }
 
-    private void validateDebitBalance(Account account, Long amount) {
-        long newBalance = getNewBalance(account, amount, TransactionType.DEBIT);
+    private void validateDebitBalance(Account account, Double amount) {
+        double newBalance = getNewBalance(account, amount, TransactionType.DEBIT);
 
         if (newBalance < 0) {
             throw new InsufficientFundsException();

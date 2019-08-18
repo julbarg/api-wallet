@@ -36,8 +36,8 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(TransactionNotFoundException.class)
-    public final ResponseEntity<Object> handleNotFoundException(TransactionNotFoundException ex, WebRequest request) throws Exception {
+    @ExceptionHandler(NotFoundException.class)
+    public final ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) throws Exception {
 
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .timestamp(new Date())

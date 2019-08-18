@@ -35,5 +35,5 @@ public class Transaction {
     private Long transactionId;
 
     @Column(nullable = false)
-    private Long amount;
+    private Double amount;
 }

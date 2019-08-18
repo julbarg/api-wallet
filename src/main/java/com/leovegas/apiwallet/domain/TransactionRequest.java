@@ -32,5 +32,5 @@ public class TransactionRequest {
     @Positive
     @NotNull
     @ApiModelProperty(notes = "Amount of transaction.", example = "100", required = true, position = 3)
-    private Long amount;
+    private Double amount;
 }

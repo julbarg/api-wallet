@@ -24,7 +24,7 @@ public class Account {
     private Long id;
 
     @Column(nullable = false)
-    private long accountNumber;
+    private Long accountNumber;
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
@@ -35,5 +35,5 @@ public class Account {
     private Set<Transaction> transaction;
 
     @Column(nullable = false)
-    private long balance;
+    private Double balance;
 }

@@ -1,5 +1,6 @@
 package com.leovegas.apiwallet.domain;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,13 +12,14 @@ import java.util.Date;
 @Builder
 @Getter
 @AllArgsConstructor
+@JsonFilter("TransactionFilter")
 public class TransactionResponse {
 
     private Long transactionId;
 
     private String transactionType;
 
-    private Long amount;
+    private Double amount;
 
     private AccountResponse account;
 
