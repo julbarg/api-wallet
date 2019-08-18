@@ -17,10 +17,6 @@ import javax.validation.constraints.Positive;
 public class TransactionRequest {
 
     @NotNull
-    @ApiModelProperty(notes = "Account number of transaction.", example = "10245845", required = true, position = 0)
-    private Long accountNumber;
-
-    @NotNull
     @Pattern(regexp = "DEBIT|CREDIT", flags = Pattern.Flag.CASE_INSENSITIVE)
     @ApiModelProperty(notes = "Type of Transaction.", example = "DEBIT", required = true, position = 1)
     private String transactionType;

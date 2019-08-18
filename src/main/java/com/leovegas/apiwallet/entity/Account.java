@@ -32,7 +32,7 @@ public class Account {
 
     @OneToMany(mappedBy = "account")
     @Column(nullable = false)
-    private Set<Transaction> transaction;
+    private Set<Transaction> transactions;
 
     @Column(nullable = false)
     private Double balance;

@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +30,10 @@ public class TransactionService {
     public Transaction retrieveTransaction(long transactionId) {
         Transaction transaction = transactionRepository.findByTransactionId(transactionId);
 
+        if (transaction == null) {
+            throw new TransactionNotFoundException("Transaction Not Found id: " + transactionId);
+        }
+
         return transaction;
     }
 
@@ -42,9 +44,7 @@ public class TransactionService {
             throw new AccountNotFoundException();
         }
 
-        List<Transaction> listTransaction = transactionRepository.findByAccount(account);
-
-        return listTransaction.stream().map(
+        return account.getTransactions().stream().map(
                 transaction ->
                     TransactionResponse.builder()
                             .date(transaction.getDate())
@@ -56,8 +56,13 @@ public class TransactionService {
 
     }
 
-    public Transaction createTransaction(TransactionRequest request) {
-        Account account = accountRepository.findByAccountNumber(request.getAccountNumber());
+    public Transaction createTransaction(long accountNumber, TransactionRequest request) {
+        Account account = accountRepository.findByAccountNumber(accountNumber);
+
+        if(account == null) {
+            throw new AccountNotFoundException();
+        }
+
         TransactionType transactionType = TransactionType.valueOf(request.getTransactionType().toUpperCase());
 
         validateUniqueTransactionId(request.getTransactionId());
