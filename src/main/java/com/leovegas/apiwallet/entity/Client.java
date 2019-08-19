@@ -27,6 +27,4 @@ public class Client {
         mappedBy = "client")
     @JsonIgnore
     private Account account;
-
-
 }

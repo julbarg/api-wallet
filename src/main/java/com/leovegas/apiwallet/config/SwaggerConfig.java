@@ -2,7 +2,6 @@ package com.leovegas.apiwallet.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.context.annotation.Import;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.PathSelectors;
@@ -36,7 +35,6 @@ public class SwaggerConfig {
             "Apache 2.0",
             "http://www.apache.org/licenses/LICENSE-2.0",
             Collections.emptyList());
-
 
     private static final Set<String> DEFAULT_PRODUCES_AND_CONSUMES =
             new HashSet<>(Arrays.asList("application/json"));

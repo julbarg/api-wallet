@@ -2,7 +2,6 @@ package com.leovegas.apiwallet.resources;
 
 import com.leovegas.apiwallet.domain.TransactionResponse;
 import com.leovegas.apiwallet.entity.Transaction;
-import com.leovegas.apiwallet.exception.TransactionNotFoundException;
 import com.leovegas.apiwallet.service.TransactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,12 +28,8 @@ public class TransactionResource {
     public MappingJacksonValue retrieveTransaction(@PathVariable long transactionId) {
         Transaction transaction = transactionService.retrieveTransaction(transactionId);
 
-
-
         TransactionResponse response = getTransactionResponseMapper(transaction);
 
         return getFilterMappingTransaction(response, null);
     }
-
-
 }

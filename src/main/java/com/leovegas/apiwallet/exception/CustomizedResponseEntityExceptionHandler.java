@@ -1,6 +1,5 @@
 package com.leovegas.apiwallet.exception;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +23,6 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) throws Exception {
-
-        System.out.println(ex.getClass());
-
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .timestamp(new Date())
                 .message(ex.getMessage())
@@ -38,7 +34,6 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler(NotFoundException.class)
     public final ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) throws Exception {
-
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .timestamp(new Date())
                 .message(ex.getMessage())
@@ -50,7 +45,6 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler(BadRequestException.class)
     public final ResponseEntity<Object> handleInsufficientFundsException(BadRequestException ex, WebRequest request) throws Exception {
-
         ExceptionResponse exceptionResponse = ExceptionResponse.builder()
                 .timestamp(new Date())
                 .message(ex.getMessage())
@@ -63,7 +57,6 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
         List<ObjectError> bindingResult = ex.getBindingResult().getAllErrors();
 
         List<String> details = bindingResult.stream()
@@ -79,4 +72,3 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }
-
