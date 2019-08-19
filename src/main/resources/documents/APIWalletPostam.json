@@ -1,0 +1,168 @@
+{
+  "front-version": "2.20.0",
+  "version": 3,
+  "nodes": [
+    {
+      "type": "Project",
+      "id": "7aa4c144-c6ee-4fc2-a7b0-0486aeb698c2",
+      "lastModified": "2019-08-18T22:22:14.983-05:00",
+      "name": "API Wallet"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "{\n  \"accountNumber\": 125407,\n  \"balance\": 100.0,\n  \"client\": {\n    \"fistName\": \"Julian\",\n    \"lastName\": \"Barragan\"\n  }\n}"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "localhost:8080",
+        "path": "/wallet/account/"
+      },
+      "id": "abaac141-21be-494f-9713-9d22763cd053",
+      "lastModified": "2019-08-18T22:19:13.107-05:00",
+      "name": "Create Account",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7aa4c144-c6ee-4fc2-a7b0-0486aeb698c2"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "requestBody": true,
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.3",
+        "name": "POST"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true,
+        "textBody": "{\n  \"transactionType\": \"CREDIT\",\n  \"transactionId\": 121233,\n  \"amount\": 100.2\n}"
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "localhost:8080",
+        "path": "/wallet/account/1024501252/transaction"
+      },
+      "id": "6fb19a71-d5e8-4d01-b452-9a79ab150657",
+      "lastModified": "2019-08-18T22:21:32.316-05:00",
+      "name": "Create Transaction",
+      "headers": [
+        {
+          "enabled": true,
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "metaInfo": {},
+      "parentId": "7aa4c144-c6ee-4fc2-a7b0-0486aeb698c2"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "localhost:8080",
+        "path": "/wallet/account/1024501252"
+      },
+      "id": "405790db-29e8-4008-9ff6-7e10bde4faef",
+      "lastModified": "2019-08-18T22:19:52.210-05:00",
+      "name": "Retrieve account details",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "7aa4c144-c6ee-4fc2-a7b0-0486aeb698c2"
+    },
+    {
+      "type": "Request",
+      "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.1",
+        "name": "GET"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "localhost:8080",
+        "path": "/wallet/account/1024501252/history"
+      },
+      "id": "12a1f80e-d711-4364-a90a-401d416563d8",
+      "lastModified": "2019-08-18T22:22:14.984-05:00",
+      "name": "Retrieve transaction history",
+      "headers": [],
+      "metaInfo": {},
+      "parentId": "7aa4c144-c6ee-4fc2-a7b0-0486aeb698c2"
+    }
+  ]
+}
