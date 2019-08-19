@@ -7,9 +7,9 @@ import com.leovegas.apiwallet.entity.Client;
 import com.leovegas.apiwallet.repository.AccountRepository;
 import com.leovegas.apiwallet.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class AccountService {
 
     @Autowired

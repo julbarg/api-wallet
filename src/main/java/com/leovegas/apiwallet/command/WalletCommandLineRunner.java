@@ -1,18 +1,15 @@
 package com.leovegas.apiwallet.command;
 
-import com.leovegas.apiwallet.domain.TransactionType;
 import com.leovegas.apiwallet.entity.Account;
 import com.leovegas.apiwallet.entity.Client;
-import com.leovegas.apiwallet.entity.Transaction;
 import com.leovegas.apiwallet.repository.ClientRepository;
-import com.leovegas.apiwallet.repository.TransactionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.util.Random;
 
 @Component
 public class WalletCommandLineRunner implements CommandLineRunner {
@@ -22,34 +19,28 @@ public class WalletCommandLineRunner implements CommandLineRunner {
     @Autowired
     ClientRepository clientRepository;
 
-    @Autowired
-    TransactionRepository transactionRepository;
-
     @Override
     public void run(String... args) throws Exception {
-        Account account = Account.builder()
-                .accountNumber(1024501252L)
-                .balance(250000.0)
-                .build();
+        Long[] accountNumbers = {1024501252L, 8795414L, 987451L, 854745L, 987454L};
+        Double[] balances = {0.0, 250.0, 799.0, 4515.8, 74554.7};
+        String[] firstNames = {"Julian", "Bob", "Tony", "Bruce", "Bob"};
+        String[] lastNames = {"Barragan", "Marley", "Stark", "Wayne", "Dylan"};
 
-        Client client = Client.builder()
-                .fistName("Julian")
-                .lastName("Barragan")
-                .account(account)
-                .build();
+        for (int i = 0; i < 5; i++) {
+            Account account = Account.builder()
+                    .accountNumber(accountNumbers[i])
+                    .balance(balances[i])
+                    .build();
 
-        account.setClient(client);
+            Client client = Client.builder()
+                    .fistName(firstNames[i])
+                    .lastName(lastNames[i])
+                    .account(account)
+                    .build();
 
-        clientRepository.save(client);
+            account.setClient(client);
 
-        Transaction transaction = Transaction.builder()
-                .date(new Date())
-                .amount(100.0)
-                .transactionType(TransactionType.CREDIT)
-                .transactionId(7888L)
-                .account(account)
-                .build();
-
-        transactionRepository.save(transaction);
+            clientRepository.save(client);
+        }
     }
 }

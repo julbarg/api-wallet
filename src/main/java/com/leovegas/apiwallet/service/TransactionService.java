@@ -12,13 +12,13 @@ import com.leovegas.apiwallet.exception.TransactionNotFoundException;
 import com.leovegas.apiwallet.repository.AccountRepository;
 import com.leovegas.apiwallet.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class TransactionService {
 
     @Autowired
