@@ -9,7 +9,7 @@ API Wallet to manage credit/debit transaction for clients
 - Intellij - IDE
 - H2 - Database
 - Heroku - Cloud plataform
-- Lombok - (It should be installing and enable if Intellij is used)
+- Lombok - (It should be installed and enabled if Intellij is used)
 - Swagger - Documentation
 
 
