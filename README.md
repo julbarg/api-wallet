@@ -1,5 +1,5 @@
-#API Wallet
-##LeoVegas
+# API Wallet
+## LeoVegas
 
 API Wallet to manage credit/debit transaction for clients
 
