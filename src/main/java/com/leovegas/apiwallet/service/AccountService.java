@@ -6,7 +6,6 @@ import com.leovegas.apiwallet.entity.Account;
 import com.leovegas.apiwallet.entity.Client;
 import com.leovegas.apiwallet.repository.AccountRepository;
 import com.leovegas.apiwallet.repository.ClientRepository;
-import com.sun.xml.internal.ws.util.CompletedFuture;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +23,7 @@ public class AccountService {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Async
     public CompletableFuture<AccountResponse> createAccount(AccountRequest request) {
         return CompletableFuture.supplyAsync(() ->
                 getAccountResponse(request)

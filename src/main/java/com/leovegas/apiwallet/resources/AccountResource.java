@@ -1,7 +1,6 @@
 package com.leovegas.apiwallet.resources;
 
 import com.leovegas.apiwallet.domain.AccountRequest;
-import com.leovegas.apiwallet.domain.AccountResponse;
 import com.leovegas.apiwallet.domain.TransactionRequest;
 import com.leovegas.apiwallet.domain.TransactionResponse;
 import com.leovegas.apiwallet.service.AccountService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.leovegas.apiwallet.util.TransactionUtil.getFilterMappingTransaction;
 import static com.leovegas.apiwallet.util.TransactionUtil.getTransactionResponseMapper;
