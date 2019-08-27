@@ -4,17 +4,19 @@ import com.leovegas.apiwallet.domain.AccountRequest;
 import com.leovegas.apiwallet.domain.AccountResponse;
 import com.leovegas.apiwallet.domain.TransactionRequest;
 import com.leovegas.apiwallet.domain.TransactionResponse;
-import com.leovegas.apiwallet.entity.Transaction;
 import com.leovegas.apiwallet.service.AccountService;
 import com.leovegas.apiwallet.service.TransactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import static com.leovegas.apiwallet.util.TransactionUtil.getFilterMappingTransaction;
 import static com.leovegas.apiwallet.util.TransactionUtil.getTransactionResponseMapper;
@@ -38,24 +40,35 @@ public class AccountResource {
 
     @GetMapping("/{accountNumber}")
     @ApiOperation("Retrieve account details")
-    public AccountResponse retrieveAccount(@PathVariable long accountNumber) {
-        return accountService.getAccountDetail(accountNumber);
+    @Async
+    public CompletableFuture<ResponseEntity> retrieveAccount(@PathVariable long accountNumber) {
+        return accountService.getAccountDetail(accountNumber)
+                .thenApply(accountResponse -> new ResponseEntity(accountResponse, HttpStatus.OK));
     }
 
     @PostMapping("/{accountNumber}/transaction")
     @ApiOperation("Create transaction by accountNumber")
-    public MappingJacksonValue createTransaction(@PathVariable long accountNumber, @Valid @RequestBody TransactionRequest request) {
-        Transaction transaction = transactionService.createTransaction(accountNumber, request);
-        TransactionResponse response = getTransactionResponseMapper(transaction);
+    @Async
+    public CompletableFuture<ResponseEntity> createTransaction(@PathVariable long accountNumber, @Valid @RequestBody TransactionRequest request) {
+        return transactionService.createTransaction(accountNumber, request)
+                .thenApply(transaction -> {
+                    TransactionResponse response = getTransactionResponseMapper(transaction);
 
-        return getFilterMappingTransaction(response, null);
+                    MappingJacksonValue filterMappingTransaction = getFilterMappingTransaction(response, null);
+
+                    return new ResponseEntity(filterMappingTransaction, HttpStatus.CREATED);
+                });
     }
 
     @GetMapping("/{accountNumber}/history")
     @ApiOperation("Retrieve transactions history by account number")
-    public MappingJacksonValue retireveHistoryAccount(@PathVariable long accountNumber) {
-        Set<TransactionResponse> transactionResponses = transactionService.retrieveHistoryTransaction(accountNumber);
+    @Async
+    public CompletableFuture<ResponseEntity> retireveHistoryAccount(@PathVariable long accountNumber) {
+        return transactionService.retrieveHistoryTransaction(accountNumber)
+                .thenApply(transactionResponses -> {
+                    MappingJacksonValue filterMappingTransaction = getFilterMappingTransaction(transactionResponses, "account");
 
-        return getFilterMappingTransaction(transactionResponses, "account");
+                    return new ResponseEntity(filterMappingTransaction, HttpStatus.OK);
+                });
     }
 }

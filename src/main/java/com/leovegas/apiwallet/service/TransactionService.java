@@ -11,11 +11,15 @@ import com.leovegas.apiwallet.exception.TransactionIdUniqueException;
 import com.leovegas.apiwallet.exception.TransactionNotFoundException;
 import com.leovegas.apiwallet.repository.AccountRepository;
 import com.leovegas.apiwallet.repository.TransactionRepository;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,36 +31,40 @@ public class TransactionService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Transaction retrieveTransaction(long transactionId) {
-        Transaction transaction = transactionRepository.findByTransactionId(transactionId);
+    @Async
+    public CompletableFuture<Transaction> retrieveTransaction(long transactionId) {
+        return CompletableFuture.supplyAsync(() ->
+            getTransaction(transactionId)
+        ).exceptionally(throwable -> {
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
 
-        if (transaction == null) {
-            throw new TransactionNotFoundException("Transaction Not Found id: " + transactionId);
-        }
-
-        return transaction;
+            throw new CompletionException(cause);
+        });
     }
 
-    public Set<TransactionResponse> retrieveHistoryTransaction(long accountNumber) {
-        Account account = accountRepository.findByAccountNumber(accountNumber);
+    @Async
+    public CompletableFuture<Set<TransactionResponse>> retrieveHistoryTransaction(long accountNumber) {
+        return CompletableFuture.supplyAsync(() ->
+                getTransactionResponses(accountNumber)
+        ).exceptionally(throwable -> {
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
 
-        if (account == null) {
-            throw new AccountNotFoundException();
-        }
-
-        return account.getTransactions().stream().map(
-                transaction ->
-                    TransactionResponse.builder()
-                            .date(transaction.getDate())
-                            .transactionId(transaction.getTransactionId())
-                            .transactionType(transaction.getTransactionType().name())
-                            .amount(transaction.getAmount())
-                            .build()
-        ).collect(Collectors.toSet());
-
+            throw new CompletionException(cause);
+        });
     }
 
-    public Transaction createTransaction(long accountNumber, TransactionRequest request) {
+    @Async
+    public CompletableFuture<Transaction> createTransaction(long accountNumber, TransactionRequest request) {
+        return CompletableFuture.supplyAsync(() ->
+            getTransaction(accountNumber, request)
+        ).exceptionally(throwable -> {
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
+
+            throw new CompletionException(cause);
+        });
+    }
+
+    private Transaction getTransaction(long accountNumber, TransactionRequest request) {
         Account account = accountRepository.findByAccountNumber(accountNumber);
 
         if(account == null) {
@@ -104,6 +112,7 @@ public class TransactionService {
         return result;
     }
 
+
     private void validateDebitBalance(Account account, Double amount) {
         double newBalance = getNewBalance(account, amount, TransactionType.DEBIT);
 
@@ -116,5 +125,33 @@ public class TransactionService {
         if (transactionRepository.existsByTransactionId(transaciontId)) {
             throw new TransactionIdUniqueException();
         }
+    }
+
+    private Set<TransactionResponse> getTransactionResponses(long accountNumber) {
+        Account account = accountRepository.findByAccountNumber(accountNumber);
+
+        if (account == null) {
+            throw new AccountNotFoundException();
+        }
+
+        return transactionRepository.findByAccount(account).stream().map(
+                transaction ->
+                        TransactionResponse.builder()
+                                .date(transaction.getDate())
+                                .transactionId(transaction.getTransactionId())
+                                .transactionType(transaction.getTransactionType().name())
+                                .amount(transaction.getAmount())
+                                .build()
+        ).collect(Collectors.toSet());
+    }
+
+    private Transaction getTransaction(long transactionId) {
+        Transaction transaction = transactionRepository.findByTransactionId(transactionId);
+
+        if (transaction == null) {
+            throw new TransactionNotFoundException("Transaction Not Found id: " + transactionId);
+        }
+
+        return transaction;
     }
 }

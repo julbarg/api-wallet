@@ -6,8 +6,13 @@ import com.leovegas.apiwallet.entity.Account;
 import com.leovegas.apiwallet.entity.Client;
 import com.leovegas.apiwallet.repository.AccountRepository;
 import com.leovegas.apiwallet.repository.ClientRepository;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 @Service
 public class AccountService {
@@ -34,10 +39,14 @@ public class AccountService {
         return getAccountResponse(account);
     }
 
-    public AccountResponse getAccountDetail(long accountNumber) {
-        Account account =  accountRepository.findByAccountNumber(accountNumber);
-
-        return getAccountResponse(account);
+    @Async
+    public CompletableFuture<AccountResponse> getAccountDetail(long accountNumber) {
+        return CompletableFuture.supplyAsync(() ->
+            getAccountResponse(accountRepository.findByAccountNumber(accountNumber))
+        ).exceptionally(throwable -> {
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
+            throw new CompletionException(cause);
+        });
     }
 
     public AccountResponse getAccountResponse (Account account) {

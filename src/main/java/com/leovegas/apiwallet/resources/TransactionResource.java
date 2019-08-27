@@ -1,19 +1,20 @@
 package com.leovegas.apiwallet.resources;
 
-import com.leovegas.apiwallet.domain.TransactionResponse;
-import com.leovegas.apiwallet.entity.Transaction;
 import com.leovegas.apiwallet.service.TransactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 import static com.leovegas.apiwallet.util.TransactionUtil.getFilterMappingTransaction;
-import static com.leovegas.apiwallet.util.TransactionUtil.getTransactionResponseMapper;
 
 @RestController
 @RequestMapping("/wallet/transaction")
@@ -25,11 +26,12 @@ public class TransactionResource {
 
     @GetMapping("/{transactionId}")
     @ApiOperation("Retrieve transaction by transactionId")
-    public MappingJacksonValue retrieveTransaction(@PathVariable long transactionId) {
-        Transaction transaction = transactionService.retrieveTransaction(transactionId);
+    public CompletableFuture<ResponseEntity> retrieveTransaction(@PathVariable long transactionId) {
+        return transactionService.retrieveTransaction(transactionId)
+                .thenApply(transactionResonse -> {
+                    MappingJacksonValue filterMappingTransaction = getFilterMappingTransaction(transactionResonse, null);
 
-        TransactionResponse response = getTransactionResponseMapper(transaction);
-
-        return getFilterMappingTransaction(response, null);
+                    return new ResponseEntity(filterMappingTransaction, HttpStatus.OK);
+                });
     }
 }

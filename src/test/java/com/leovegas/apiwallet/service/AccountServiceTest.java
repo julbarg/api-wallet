@@ -10,10 +10,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class AccountServiceTest {
 
     @InjectMocks
@@ -41,7 +43,5 @@ public class AccountServiceTest {
         assertEquals(response.getBalance(), new Double(59896.3));
         assertEquals(response.getClient().getFistName(), "Bob");
         assertEquals(response.getClient().getLastName(), "Marley");
-
     }
-
 }

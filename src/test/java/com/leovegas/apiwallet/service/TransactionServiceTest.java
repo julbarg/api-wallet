@@ -4,7 +4,6 @@ import com.leovegas.apiwallet.domain.TransactionRequest;
 import com.leovegas.apiwallet.domain.TransactionType;
 import com.leovegas.apiwallet.entity.Account;
 import com.leovegas.apiwallet.entity.Transaction;
-import com.leovegas.apiwallet.exception.InsufficientFundsException;
 import com.leovegas.apiwallet.repository.AccountRepository;
 import com.leovegas.apiwallet.repository.TransactionRepository;
 import org.junit.Test;
@@ -12,16 +11,20 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class TransactionServiceTest {
 
     @InjectMocks
@@ -35,7 +38,7 @@ public class TransactionServiceTest {
 
 
 
-    @Test(expected = InsufficientFundsException.class)
+    @Test(expected = CompletionException.class)
     public void shouldReturnInsufficientFundException() {
         long transactionId = 7895L;
         Account account = Account.builder()
@@ -54,7 +57,8 @@ public class TransactionServiceTest {
                 .transactionId(transactionId)
                 .build();
 
-        transactionService.createTransaction(58789, request);
+        CompletableFuture<Transaction> transaction = transactionService.createTransaction(564656L, request);
+        transaction.join();
     }
 
     @Test
@@ -76,7 +80,7 @@ public class TransactionServiceTest {
                 .transactionId(transactionId)
                 .build();
 
-        Transaction transaction = transactionService.createTransaction(58789, request);
+        Transaction transaction = transactionService.createTransaction(58789, request).join();
         assertEquals(transaction.getTransactionId().longValue(), transactionId);
         assertEquals(transaction.getAmount(), new Double(250.0));
         assertEquals(transaction.getAccount().getBalance(), new Double(275.0));
@@ -84,9 +88,6 @@ public class TransactionServiceTest {
 
     @Test
     public void shouldRetrieveTransactions() {
-        long transactionId = 7895L;
-
-
         Account account = Account.builder()
                 .accountNumber(564656L)
                 .balance(25.0)
@@ -96,7 +97,10 @@ public class TransactionServiceTest {
         when(accountRepository.findByAccountNumber(anyLong()))
                 .thenReturn(account);
 
-        assertEquals(transactionService.retrieveHistoryTransaction(58789L).size(), 3);
+        when(transactionRepository.findByAccount(account))
+                .thenReturn(account.getTransactions());
+
+        assertEquals(transactionService.retrieveHistoryTransaction(564656L).join().size(), 3);
     }
 
     private Set<Transaction> getSetTransactions(int numberOfItems) {
