@@ -6,6 +6,7 @@ import com.leovegas.apiwallet.entity.Account;
 import com.leovegas.apiwallet.entity.Client;
 import com.leovegas.apiwallet.repository.AccountRepository;
 import com.leovegas.apiwallet.repository.ClientRepository;
+import com.sun.xml.internal.ws.util.CompletedFuture;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -23,20 +24,13 @@ public class AccountService {
     @Autowired
     private ClientRepository clientRepository;
 
-    public AccountResponse createAccount(AccountRequest request) {
-        Client client = request.getClient();
-
-        clientRepository.save(client);
-
-        Account account = Account.builder()
-                .accountNumber(request.getAccountNumber())
-                .balance(request.getBalance())
-                .client(request.getClient())
-                .build();
-
-        accountRepository.save(account);
-
-        return getAccountResponse(account);
+    public CompletableFuture<AccountResponse> createAccount(AccountRequest request) {
+        return CompletableFuture.supplyAsync(() ->
+                getAccountResponse(request)
+        ).exceptionally(throwable -> {
+            Throwable cause = ExceptionUtils.getRootCause(throwable);
+            throw new CompletionException(cause);
+        });
     }
 
     @Async
@@ -56,5 +50,21 @@ public class AccountService {
                 .balance(account.getBalance())
                 .client(account.getClient())
                 .build();
+    }
+
+    private AccountResponse getAccountResponse(AccountRequest request) {
+        Client client = request.getClient();
+
+        clientRepository.save(client);
+
+        Account account = Account.builder()
+                .accountNumber(request.getAccountNumber())
+                .balance(request.getBalance())
+                .client(request.getClient())
+                .build();
+
+        accountRepository.save(account);
+
+        return getAccountResponse(account);
     }
 }

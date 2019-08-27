@@ -19,7 +19,7 @@ public class Account {
     @JsonIgnore
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long accountNumber;
 
     @OneToOne(fetch = FetchType.EAGER, optional = false)

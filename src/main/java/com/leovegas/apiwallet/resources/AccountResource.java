@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static com.leovegas.apiwallet.util.TransactionUtil.getFilterMappingTransaction;
 import static com.leovegas.apiwallet.util.TransactionUtil.getTransactionResponseMapper;
@@ -34,8 +35,10 @@ public class AccountResource {
 
     @PostMapping
     @ApiOperation("Create account")
-    public AccountResponse retrieveAccount(@RequestBody AccountRequest request) {
-        return accountService.createAccount(request);
+    @Async
+    public CompletableFuture<ResponseEntity> retrieveAccount(@RequestBody AccountRequest request) {
+        return accountService.createAccount(request)
+                .thenApply(accountResponse -> new ResponseEntity(accountResponse, HttpStatus.CREATED));
     }
 
     @GetMapping("/{accountNumber}")

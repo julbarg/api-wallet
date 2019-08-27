@@ -38,7 +38,7 @@ public class AccountServiceTest {
                         .build())
                 .build();
 
-        AccountResponse response = accountService.createAccount(request);
+        AccountResponse response = accountService.createAccount(request).join();
 
         assertEquals(response.getBalance(), new Double(59896.3));
         assertEquals(response.getClient().getFistName(), "Bob");
